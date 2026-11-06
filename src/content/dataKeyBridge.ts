@@ -3,8 +3,8 @@ const TOLGEE_KEY_ATTRIBUTE = 'data-tolgee-key-only';
 
 /**
  * Bridges conventional data-key markup to the attribute understood by the
- * Tolgee JS ObserverPlugin. The SDK remains responsible for rendering and
- * opening its in-context editor; this extension only makes the key discoverable.
+ * Tolgee JS ObserverPlugin. Native data-tolgee-key-only markup is already
+ * SDK-compatible and is deliberately left untouched.
  */
 export function bridgeDataKeys(root: ParentNode = document): () => void {
   const bridged = new WeakSet<Element>();
@@ -12,6 +12,7 @@ export function bridgeDataKeys(root: ParentNode = document): () => void {
   const syncElement = (element: Element) => {
     const key = element.getAttribute(SOURCE_ATTRIBUTE);
     if (key?.trim()) {
+      // Do not replace an explicitly configured Tolgee key-only attribute.
       if (!element.hasAttribute(TOLGEE_KEY_ATTRIBUTE)) {
         element.setAttribute(TOLGEE_KEY_ATTRIBUTE, key);
         bridged.add(element);
@@ -50,4 +51,9 @@ export function bridgeDataKeys(root: ParentNode = document): () => void {
   });
 
   return () => observer.disconnect();
+}
+
+/** True when the page contains markup that the Tolgee SDK can observe. */
+export function hasTolgeeKeyElements(root: ParentNode = document): boolean {
+  return root.querySelector('[data-tolgee-key-only]') !== null;
 }
