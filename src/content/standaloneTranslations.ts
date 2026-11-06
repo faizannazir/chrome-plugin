@@ -169,10 +169,9 @@ export const startStandaloneTranslations = (
     if (original === undefined) {
       return;
     }
-    if (element.getAttribute('data-tolgee-standalone') === 'true') {
+    if (changedElements.has(element)) {
       element.textContent = original;
     }
-    element.removeAttribute('data-tolgee-standalone');
     originalText.delete(element);
     changedElements.delete(element);
   };
@@ -193,7 +192,6 @@ export const startStandaloneTranslations = (
     }
     if (element.textContent !== translated) {
       element.textContent = translated;
-      element.setAttribute('data-tolgee-standalone', 'true');
       changedElements.add(element);
     }
   };
