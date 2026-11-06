@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { writeCredentialsIfChanged, SessionStore } from './credentialSink';
+import {
+  readAppliedCredentials,
+  writeCredentialsIfChanged,
+  SessionStore,
+} from './credentialSink';
 import {
   API_KEY_SESSION_STORAGE,
   API_URL_SESSION_STORAGE,
@@ -138,6 +142,7 @@ describe('writeCredentialsIfChanged', () => {
       const store = fakeStore();
       writeCredentialsIfChanged(store, { editing: 'off' });
       expect(store.map.get(EDITING_SESSION_STORAGE)).toBe('off');
+      expect(readAppliedCredentials(store).editing).toBe('off');
 
       writeCredentialsIfChanged(store, {});
       expect(store.map.get(EDITING_SESSION_STORAGE)).toBe('off');

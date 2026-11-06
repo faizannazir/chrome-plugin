@@ -34,12 +34,12 @@ export const useSessionRestore = (
   }, [storedValues, appliedValues]);
 
   useEffect(() => {
-    if (libConfig) {
-      syncPageAppliedValues().catch(() => undefined);
-      restoreStoredSession().catch(() => undefined);
-      checkMissingPermissions().catch(() => undefined);
-      restoreConnectRefusal().catch(() => undefined);
-    }
+    // A Tolgee SDK handshake is optional: the extension can own the connection
+    // and use its background API proxy on pages that only expose data-key markup.
+    syncPageAppliedValues().catch(() => undefined);
+    restoreStoredSession().catch(() => undefined);
+    checkMissingPermissions().catch(() => undefined);
+    restoreConnectRefusal().catch(() => undefined);
   }, [libConfig]);
 
   const syncPageAppliedValues = async () => {

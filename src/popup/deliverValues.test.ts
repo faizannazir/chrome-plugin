@@ -113,6 +113,28 @@ describe('syncToStorageAndPage', () => {
     }
   });
 
+  it('keeps the standalone proxy session while editing is switched off without an SDK', async () => {
+    store.set(ORIGIN, session);
+
+    await syncToStorageAndPage(
+      { storedValues: session, appliedValues: null, editingSwitchedOff: true },
+      null
+    );
+
+    expect(sent.map((s) => s.tabId)).toEqual([1, 2]);
+    for (const { message } of sent) {
+      expect(message.data).toMatchObject({
+        apiUrl: session.apiUrl,
+        session: 'apiKey',
+        projectId: 7,
+        projectKey: '7',
+        editing: 'off',
+        pageOrigin: ORIGIN,
+      });
+      expect(message.data.apiKey).toBeUndefined();
+    }
+  });
+
   it('removing the session clears the record and every tab of the origin', async () => {
     store.set(ORIGIN, session);
 

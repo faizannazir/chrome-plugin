@@ -7,16 +7,34 @@ import {
 } from './credentialSink';
 import { Messages } from './Messages';
 import { updateState } from './updateState';
+import { bridgeDataKeys, hasTolgeeKeyElements } from './dataKeyBridge';
+import { startStandaloneTranslations } from './standaloneTranslations';
 
 let configuration: LibConfig | undefined = undefined;
+let stopStandaloneTranslations: (() => void) | undefined;
+
+// Translate conventional data-key markup into the key-only attribute the SDK observes.
+bridgeDataKeys();
 
 const messages = new Messages();
 messages.startWindowListening();
+
+// Give a normal SDK time to announce itself. If it does not, pages with
+// backend-rendered key attributes can use the extension's standalone renderer.
+window.setTimeout(() => {
+  if (!configuration && hasTolgeeKeyElements()) {
+    stopStandaloneTranslations = startStandaloneTranslations(messages);
+  }
+}, 1_200);
 
 // handshake with library
 messages.listenWindow('TOLGEE_READY', (c: LibConfig) => {
   const firstHandshake = !configuration;
   configuration = c;
+  // The SDK owns its page integration whenever it is present. Stop the fallback
+  // renderer if a delayed SDK handshake arrives after the fallback was started.
+  stopStandaloneTranslations?.();
+  stopStandaloneTranslations = undefined;
   updateState(configuration, messages);
   if (firstHandshake) {
     messages.sendToLib('TOLGEE_PLUGIN_READY');
@@ -50,6 +68,9 @@ messages.listenRuntime('DETECT_TOLGEE', async () => {
   if (configuration) {
     messages.sendToPlugin('TOLGEE_CONFIG_LOADED', configuration);
   }
+  // data-tolgee-key-only is SDK-compatible markup, but by itself does not
+  // prove that the Tolgee runtime is initialized on this page.
+  return { keyMarkupFound: hasTolgeeKeyElements() };
 });
 
 messages.listenRuntime('GET_CREDENTIALS', async () =>

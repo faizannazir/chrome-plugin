@@ -19,8 +19,14 @@ export const syncToStorageAndPage = async (
   // find the origin record, so the record is written before the page hears anything.
   await storeValues(slots.storedValues);
   const pageOrigin = await getActiveTabOrigin();
+  // Standalone rendering still needs its proxied session while editing is switched off.
+  // Keep the connection on SDK-free pages; only the editing flag changes.
+  const valuesForDelivery =
+    !libConfig && slots.editingSwitchedOff
+      ? slots.storedValues
+      : slots.appliedValues;
   const credentials = {
-    ...pageCredentials(slots.appliedValues, libConfig),
+    ...pageCredentials(valuesForDelivery, libConfig),
     editing: pageEditing(slots),
   };
   if (endsSessionForOrigin(slots) && pageOrigin) {

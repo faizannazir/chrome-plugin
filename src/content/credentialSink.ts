@@ -38,6 +38,8 @@ export const readAppliedCredentials = (
   session: sessionKindOf(store.getItem(EXTENSION_SESSION_STORAGE)),
   projectId: store.getItem(PROJECT_ID_SESSION_STORAGE),
   projectKey: store.getItem(PROJECT_KEY_SESSION_STORAGE),
+  editing:
+    store.getItem(EDITING_SESSION_STORAGE) === 'off' ? 'off' : undefined,
 });
 
 // Never part of the reload decision: the SDK reads the slot on every dialog request.

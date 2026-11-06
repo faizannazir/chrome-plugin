@@ -6,14 +6,15 @@ export const statusFor = ({
   error,
   tolgeePresent,
   appliedValues,
-}: Pick<State, 'error' | 'tolgeePresent' | 'appliedValues'>): Status | null => {
+  keyMarkupFound,
+}: Pick<State, 'error' | 'tolgeePresent' | 'appliedValues' | 'keyMarkupFound'>): Status | null => {
   if (error) {
     return 'error';
   }
   if (tolgeePresent === 'loading') {
     return 'loading';
   }
-  if (tolgeePresent === 'present' || appliedValues) {
+  if (tolgeePresent === 'present' || appliedValues || keyMarkupFound) {
     return null;
   }
   return tolgeePresent === 'legacy' ? 'legacy' : 'not_present';

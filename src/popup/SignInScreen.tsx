@@ -1,4 +1,5 @@
 import React from 'react';
+import { Alert } from '@mui/material';
 import { ApiKeyTab } from './ApiKeyTab';
 import { LoginTab } from './LoginTab';
 import { PopupFrame } from './PopupFrame';
@@ -30,6 +31,7 @@ type Props = {
   apiKeyCheck: CredentialsCheck;
   canApplyApiKey: boolean;
   onApplyApiKey: () => void;
+  keyMarkupFound: boolean;
 };
 
 export const SignInScreen = ({
@@ -55,6 +57,7 @@ export const SignInScreen = ({
   apiKeyCheck,
   canApplyApiKey,
   onApplyApiKey,
+  keyMarkupFound,
 }: Props) => (
   <PopupFrame
     title={tab === 'apiKey' ? API_KEY_TITLE : PLUGIN_TITLE}
@@ -73,9 +76,16 @@ export const SignInScreen = ({
       ),
     }}
   >
+    {keyMarkupFound && (
+      <Alert severity="info" data-testid="standalone-key-markup">
+        This page exposes translation keys. Connect your Tolgee project here to
+        use the extension without installing the Tolgee JavaScript SDK.
+      </Alert>
+    )}
     {tab === 'login' && (
       <LoginTab
         projectDetected={declaredId !== undefined}
+        keyMarkupFound={keyMarkupFound}
         sdkTooOld={sdkTooOld}
         serverHost={serverHost}
         serverLink={serverLink}

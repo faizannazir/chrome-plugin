@@ -23,6 +23,7 @@ export const sdkTooOldFor = ({
   siteKeyScreen: boolean;
   activeValues: Values | null | undefined;
 }): boolean =>
+  libConfig != null &&
   !sdkSupportsProxy(libConfig) &&
   !siteKeyScreen &&
   !(hasSession && activeValues?.apiKey);
