@@ -85,6 +85,7 @@ export const SignInScreen = ({
     {tab === 'login' && (
       <LoginTab
         projectDetected={declaredId !== undefined}
+        keyMarkupFound={keyMarkupFound}
         sdkTooOld={sdkTooOld}
         serverHost={serverHost}
         serverLink={serverLink}
