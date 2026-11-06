@@ -18,17 +18,24 @@ describe('bridgeDataKeys', () => {
     const next = document.createElement('span');
     next.setAttribute('data-key', 'profile.title');
     document.body.append(next);
-    await vi.waitFor(() => expect(next.getAttribute('data-tolgee-key-only')).toBe('profile.title'));
+    await vi.waitFor(() =>
+      expect(next.getAttribute('data-tolgee-key-only')).toBe('profile.title')
+    );
   });
 
   it('updates/removes only attributes created by the bridge', async () => {
-    document.body.innerHTML = '<div data-key="first"></div><div data-key="second" data-tolgee-key-only="manual"></div>';
+    document.body.innerHTML =
+      '<div data-key="first"></div><div data-key="second" data-tolgee-key-only="manual"></div>';
     stop = bridgeDataKeys();
     const [bridged, manual] = document.querySelectorAll('div');
     bridged.setAttribute('data-key', 'updated');
-    await vi.waitFor(() => expect(bridged.getAttribute('data-tolgee-key-only')).toBe('updated'));
+    await vi.waitFor(() =>
+      expect(bridged.getAttribute('data-tolgee-key-only')).toBe('updated')
+    );
     bridged.removeAttribute('data-key');
-    await vi.waitFor(() => expect(bridged.hasAttribute('data-tolgee-key-only')).toBe(false));
+    await vi.waitFor(() =>
+      expect(bridged.hasAttribute('data-tolgee-key-only')).toBe(false)
+    );
     expect(manual.getAttribute('data-tolgee-key-only')).toBe('manual');
   });
 
@@ -36,7 +43,9 @@ describe('bridgeDataKeys', () => {
     document.body.innerHTML = '<p data-tolgee-key-only="native.key">Original</p>';
     expect(hasTolgeeKeyElements()).toBe(true);
     stop = bridgeDataKeys();
-    expect(document.querySelector('p')?.getAttribute('data-tolgee-key-only')).toBe('native.key');
+    expect(
+      document.querySelector('p')?.getAttribute('data-tolgee-key-only')
+    ).toBe('native.key');
   });
 
   it('returns false when no Tolgee key-only elements exist', () => {
