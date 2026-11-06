@@ -256,6 +256,12 @@ export const startStandaloneTranslations = (
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       if (
+        mutation.type === 'characterData' &&
+        mutation.target.parentElement
+      ) {
+        renderElement(mutation.target.parentElement);
+      }
+      if (
         mutation.type === 'attributes' &&
         mutation.target instanceof Element
       ) {
