@@ -29,7 +29,10 @@ export const useTolgeeDetection = (
           'keyMarkupFound' in response &&
           typeof response.keyMarkupFound === 'boolean'
         ) {
-          dispatch({ type: 'SET_KEY_MARKUP_FOUND', payload: response.keyMarkupFound });
+          dispatch({
+            type: 'SET_KEY_MARKUP_FOUND',
+            payload: response.keyMarkupFound,
+          });
         }
       }).catch(() => {
         if (cancelled) {
