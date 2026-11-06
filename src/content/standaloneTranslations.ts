@@ -101,10 +101,12 @@ export const startStandaloneTranslations = (
         )
       )
       .find((item) => item !== undefined);
-    const languageFallback = available.find((item) => !item.base) ?? available[0];
+    const languageFallback = available.find((item) => item.base) ?? available[0];
     language = selected?.tag ?? languageFallback?.tag ?? language;
     if (!language) {
-      throw new Error('No language is available in the connected Tolgee project');
+      throw new Error(
+        'No language is available in the connected Tolgee project'
+      );
     }
 
     const loaded = new Map<string, string>();
@@ -184,7 +186,11 @@ export const startStandaloneTranslations = (
   };
 
   const onClick = async (event: MouseEvent) => {
-    if (!event.altKey || !(event.target instanceof Element)) {
+    if (
+      !event.altKey ||
+      readAppliedCredentials(sessionStorage).editing === 'off' ||
+      !(event.target instanceof Element)
+    ) {
       return;
     }
     const element = event.target.closest(
@@ -226,7 +232,10 @@ export const startStandaloneTranslations = (
 
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
-      if (mutation.type === 'attributes' && mutation.target instanceof Element) {
+      if (
+        mutation.type === 'attributes' &&
+        mutation.target instanceof Element
+      ) {
         renderElement(mutation.target);
       }
       mutation.addedNodes.forEach((node) => {
@@ -254,7 +263,10 @@ export const startStandaloneTranslations = (
       document.addEventListener('click', onClick, true);
     })
     .catch((error) => {
-      console.warn('[Tolgee] Standalone translation mode could not start', error);
+      console.warn(
+        '[Tolgee] Standalone translation mode could not start',
+        error
+      );
     });
 
   return () => {
@@ -271,9 +283,13 @@ const preferredLanguages = (): string[] => {
     navigator.language,
     document.documentElement.lang,
   ];
-  return [...new Set(candidates.map((value) => value?.trim()).filter(
-    (value): value is string => Boolean(value)
-  ))];
+  return [
+    ...new Set(
+      candidates
+        .map((value) => value?.trim())
+        .filter((value): value is string => Boolean(value))
+    ),
+  ];
 };
 
 const preferredLanguage = (): string | null =>
