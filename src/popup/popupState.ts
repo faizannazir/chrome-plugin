@@ -78,6 +78,7 @@ export const initialState = {
   // The user switched editing off in this popup (as opposed to a stored session never applied on this page).
   editingSwitchedOff: false,
   tolgeePresent: 'loading' as TolgeePresent,
+  keyMarkupFound: false,
   credentialsCheck: null as CredentialsCheck,
   libConfig: null as LibConfig | null,
   error: null as string | null,
@@ -97,6 +98,7 @@ export type Action =
       payload: { libData: LibConfig | null; frameId: number | null };
     }
   | { type: 'SET_ERROR'; payload: string }
+  | { type: 'SET_KEY_MARKUP_FOUND'; payload: boolean }
   | { type: 'SET_APPLIED_VALUES'; payload: Values | null }
   | { type: 'SET_CREDENTIALS_CHECK'; payload: CredentialsCheck }
   | { type: 'LOAD_STORED_VALUES'; payload: Values | null }
