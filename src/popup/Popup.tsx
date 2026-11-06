@@ -186,6 +186,7 @@ export const Popup = () => {
       apiKeyCheck={apiKeyCheck}
       canApplyApiKey={canApplyApiKey}
       onApplyApiKey={apiKeyConnect.applyApiKey}
+      keyMarkupFound={keyMarkupFound}
     />
   );
 };
