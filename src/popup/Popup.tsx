@@ -33,6 +33,7 @@ export const Popup = () => {
     appliedValues,
     libConfig,
     tolgeePresent,
+    keyMarkupFound,
     credentialsCheck,
     branches,
     declaredProject,
@@ -105,7 +106,7 @@ export const Popup = () => {
     dispatch({ type: 'APPLY_VALUES' });
   };
 
-  const status = statusFor({ error, tolgeePresent, appliedValues });
+  const status = statusFor({ error, tolgeePresent, appliedValues, keyMarkupFound };
   if (status) {
     return <StatusScreen status={status} error={error} />;
   }
