@@ -44,6 +44,10 @@ export const startStandaloneTranslations = (
 
   let stopped = false;
   const values = new Map<string, string>();
+  const keyDetails = new Map<
+    string,
+    { name: string; namespace?: string }
+  >();
   const originalText = new WeakMap<Element, string>();
   const changedElements = new Set<Element>();
 
@@ -134,7 +138,15 @@ export const startStandaloneTranslations = (
         const name = key.keyName;
         const text = key.translations?.[language]?.text;
         if (name && typeof text === 'string') {
+          const namespace = key.keyNamespace || undefined;
+          const details = { name, namespace };
           loaded.set(name, text);
+          keyDetails.set(name, details);
+          if (namespace) {
+            const qualifiedName = `${namespace}.${name}`;
+            loaded.set(qualifiedName, text);
+            keyDetails.set(qualifiedName, details);
+          }
         }
       }
       const totalPages = body.page?.totalPages ?? page + 1;
@@ -223,8 +235,10 @@ export const startStandaloneTranslations = (
       const path = `/v2/projects/${encodeURIComponent(
         credentials.projectKey!
       )}/translations`;
+      const details = keyDetails.get(key) ?? { name: key };
       await request('PUT', path, {
-        key,
+        key: details.name,
+        ...(details.namespace ? { namespace: details.namespace } : {}),
         translations: { [language]: edited },
       });
       values.set(key, edited);
