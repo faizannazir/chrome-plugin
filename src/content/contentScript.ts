@@ -7,8 +7,12 @@ import {
 } from './credentialSink';
 import { Messages } from './Messages';
 import { updateState } from './updateState';
+import { bridgeDataKeys } from './dataKeyBridge';
 
 let configuration: LibConfig | undefined = undefined;
+
+// Translate conventional data-key markup into the key-only attribute the SDK observes.
+bridgeDataKeys();
 
 const messages = new Messages();
 messages.startWindowListening();
