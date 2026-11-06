@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { bridgeDataKeys } from './dataKeyBridge';
+import { bridgeDataKeys, hasTolgeeKeyElements } from './dataKeyBridge';
 
 describe('bridgeDataKeys', () => {
   let stop: (() => void) | undefined;
@@ -32,3 +32,15 @@ describe('bridgeDataKeys', () => {
     expect(manual.getAttribute('data-tolgee-key-only')).toBe('manual');
   });
 });
+
+  it('recognizes native data-tolgee-key-only markup without rewriting it', () => {
+    document.body.innerHTML = '<p data-tolgee-key-only="native.key">Original</p>';
+    expect(hasTolgeeKeyElements()).toBe(true);
+    stop = bridgeDataKeys();
+    expect(document.querySelector('p')?.getAttribute('data-tolgee-key-only')).toBe('native.key');
+  });
+
+  it('returns false when no Tolgee key-only elements exist', () => {
+    document.body.innerHTML = '<p>Plain content</p>';
+    expect(hasTolgeeKeyElements()).toBe(false);
+  });
