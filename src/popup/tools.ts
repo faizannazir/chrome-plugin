@@ -72,6 +72,9 @@ export const appliedValuesFrom = (
     projectId: Number.isNaN(projectId) ? undefined : projectId,
     projectKey: page?.projectKey || undefined,
   };
+  if (page?.editing === 'off') {
+    return base;
+  }
   if (page?.apiKey) {
     return { ...base, apiKey: page.apiKey };
   }
