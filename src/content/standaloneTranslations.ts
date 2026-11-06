@@ -311,9 +311,9 @@ export const startStandaloneTranslations = (
 
 const preferredLanguages = (): string[] => {
   const candidates = [
+    document.documentElement.lang,
     ...(navigator.languages ?? []),
     navigator.language,
-    document.documentElement.lang,
   ];
   return [
     ...new Set(
