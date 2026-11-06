@@ -456,6 +456,15 @@ describe('appliedValuesFrom', () => {
     expect(appliedValuesFrom(delivered, stored).apiKey).toBe('tgpak_page');
   });
 
+  it('does not treat an SDK-free page as applied after editing is switched off', () => {
+    expect(appliedValuesFrom({ ...page, editing: 'off' }, stored)).toEqual({
+      apiUrl: 'https://app.tolgee.io',
+      branch: 'feat',
+      projectId: 3,
+      projectKey: '3',
+    });
+  });
+
   it('reports an OAuth session as such', () => {
     expect(appliedValuesFrom({ ...page, session: 'oauth' }, stored)).toEqual({
       apiUrl: 'https://app.tolgee.io',
