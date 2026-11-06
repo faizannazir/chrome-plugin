@@ -39,6 +39,11 @@ describe('bridgeDataKeys', () => {
     expect(manual.getAttribute('data-tolgee-key-only')).toBe('manual');
   });
 
+  it('detects backend data-key markup even before the bridge observer runs', () => {
+    document.body.innerHTML = '<p data-key="account.name">Account</p>';
+    expect(hasTolgeeKeyElements()).toBe(true);
+  });
+
   it('recognizes native data-tolgee-key-only markup without rewriting it', () => {
     document.body.innerHTML = '<p data-tolgee-key-only="native.key">Original</p>';
     expect(hasTolgeeKeyElements()).toBe(true);
