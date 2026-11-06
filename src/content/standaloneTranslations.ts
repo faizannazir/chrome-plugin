@@ -49,6 +49,7 @@ export const startStandaloneTranslations = (
     { name: string; namespace?: string }
   >();
   const originalText = new WeakMap<Element, string>();
+  const lastAppliedText = new WeakMap<Element, string>();
   const changedElements = new Set<Element>();
 
   const request = async (
@@ -173,6 +174,7 @@ export const startStandaloneTranslations = (
       element.textContent = original;
     }
     originalText.delete(element);
+    lastAppliedText.delete(element);
     changedElements.delete(element);
   };
 
@@ -187,11 +189,13 @@ export const startStandaloneTranslations = (
       restoreElement(element);
       return;
     }
-    if (!originalText.has(element)) {
+    const lastApplied = lastAppliedText.get(element);
+    if (lastApplied === undefined || element.textContent !== lastApplied) {
       originalText.set(element, element.textContent ?? '');
     }
     if (element.textContent !== translated) {
       element.textContent = translated;
+      lastAppliedText.set(element, translated);
       changedElements.add(element);
     }
   };
@@ -261,6 +265,8 @@ export const startStandaloneTranslations = (
         if (node instanceof Element) {
           renderElement(node);
           renderTree(node);
+        } else if (node.parentElement) {
+          renderElement(node.parentElement);
         }
       });
     }
@@ -276,6 +282,7 @@ export const startStandaloneTranslations = (
       observer.observe(document.documentElement, {
         subtree: true,
         childList: true,
+        characterData: true,
         attributes: true,
         attributeFilter: ['data-key', 'data-tolgee-key-only'],
       });
