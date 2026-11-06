@@ -35,6 +35,14 @@ export const StatusScreen = ({
           </Typography>
         </PopupFrame>
       );
+    case 'keys_found':
+      return (
+        <PopupFrame title={PLUGIN_TITLE} testId="popup-keys-found">
+          <Typography variant="body2">
+            Tolgee key attributes found (data-tolgee-key-only). The Tolgee SDK has not confirmed it is initialized on this page.
+          </Typography>
+        </PopupFrame>
+      );
     case 'not_present':
       return (
         <PopupFrame title={PLUGIN_TITLE} testId="popup-not-present">
