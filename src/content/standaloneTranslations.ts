@@ -44,6 +44,7 @@ export const startStandaloneTranslations = (
   let stopped = false;
   const values = new Map<string, string>();
   const originalText = new WeakMap<Element, string>();
+  const changedElements = new Set<Element>();
 
   const request = async (
     method: 'GET' | 'PUT',
@@ -117,13 +118,28 @@ export const startStandaloneTranslations = (
     return key?.trim() || null;
   };
 
+  const restoreElement = (element: Element) => {
+    const original = originalText.get(element);
+    if (original === undefined) {
+      return;
+    }
+    if (element.getAttribute('data-tolgee-standalone') === 'true') {
+      element.textContent = original;
+    }
+    element.removeAttribute('data-tolgee-standalone');
+    originalText.delete(element);
+    changedElements.delete(element);
+  };
+
   const renderElement = (element: Element) => {
     if (element.children.length > 0) {
+      restoreElement(element);
       return;
     }
     const key = keyOf(element);
     const translated = key ? values.get(key) : undefined;
     if (translated === undefined) {
+      restoreElement(element);
       return;
     }
     if (!originalText.has(element)) {
@@ -132,6 +148,7 @@ export const startStandaloneTranslations = (
     if (element.textContent !== translated) {
       element.textContent = translated;
       element.setAttribute('data-tolgee-standalone', 'true');
+      changedElements.add(element);
     }
   };
 
@@ -219,6 +236,7 @@ export const startStandaloneTranslations = (
     stopped = true;
     observer.disconnect();
     document.removeEventListener('click', onClick, true);
+    changedElements.forEach(restoreElement);
   };
 };
 
