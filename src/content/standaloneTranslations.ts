@@ -95,11 +95,17 @@ export const startStandaloneTranslations = (
     );
     const candidates = preferredLanguages();
     const selected = candidates
-      .map((candidate) =>
-        available.find(
-          (item) => item.tag.toLowerCase() === candidate.toLowerCase()
-        )
-      )
+      .map((candidate) => {
+        const normalized = candidate.toLowerCase();
+        return (
+          available.find((item) => item.tag.toLowerCase() === normalized) ??
+          available.find(
+            (item) =>
+              item.tag.split('-')[0].toLowerCase() ===
+              normalized.split('-')[0]
+          )
+        );
+      })
       .find((item) => item !== undefined);
     const languageFallback = available.find((item) => item.base) ?? available[0];
     language = selected?.tag ?? languageFallback?.tag ?? language;
