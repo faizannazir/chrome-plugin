@@ -21,7 +21,11 @@ export const useTolgeeDetection = (
     // Applying/un-applying reloads the page, so the content script is briefly gone. A dev-server page (vite) can
     // take well over 4 s to get it back, so keep asking for a while before giving up.
     const detect = (waitedMs: number, delayMs: number) => {
-      sendMessage('DETECT_TOLGEE').catch(() => {
+      sendMessage('DETECT_TOLGEE').then((response: { keyMarkupFound?: boolean } | undefined) => {
+        if (!cancelled && typeof response?.keyMarkupFound === 'boolean') {
+          dispatch({ type: 'SET_KEY_MARKUP_FOUND', payload: response.keyMarkupFound });
+        }
+      }).catch(() => {
         if (cancelled) {
           return;
         }
