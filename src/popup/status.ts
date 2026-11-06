@@ -1,12 +1,13 @@
 import { State } from './popupState';
 
-export type Status = 'error' | 'loading' | 'legacy' | 'not_present';
+export type Status = 'error' | 'loading' | 'legacy' | 'not_present' | 'keys_found';
 
 export const statusFor = ({
   error,
   tolgeePresent,
   appliedValues,
-}: Pick<State, 'error' | 'tolgeePresent' | 'appliedValues'>): Status | null => {
+  keyMarkupFound,
+}: Pick<State, 'error' | 'tolgeePresent' | 'appliedValues' | 'keyMarkupFound'>): Status | null => {
   if (error) {
     return 'error';
   }
@@ -15,6 +16,9 @@ export const statusFor = ({
   }
   if (tolgeePresent === 'present' || appliedValues) {
     return null;
+  }
+  if (keyMarkupFound) {
+    return 'keys_found';
   }
   return tolgeePresent === 'legacy' ? 'legacy' : 'not_present';
 };
