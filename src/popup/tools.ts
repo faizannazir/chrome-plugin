@@ -30,7 +30,11 @@ export const credentialDelivery = (
   libConfig: LibConfig | null | undefined,
   hasApiKey: boolean
 ): CredentialDelivery =>
-  hasApiKey && !sdkSupportsProxy(libConfig) ? 'page' : 'proxy';
+  // Without an SDK there is no page-side consumer for a raw key. Keep it in the
+  // extension worker and use the same authenticated proxy as modern SDK builds.
+  hasApiKey && libConfig != null && !sdkSupportsProxy(libConfig)
+    ? 'page'
+    : 'proxy';
 
 export const pageCredentials = (
   values: Values | null | undefined,
