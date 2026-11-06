@@ -16,6 +16,7 @@ const LEARN_MORE_PROJECT_ID =
 
 type Props = {
   projectDetected: boolean;
+  keyMarkupFound: boolean;
   sdkTooOld: boolean;
   serverHost: string;
   serverLink: string;
@@ -29,6 +30,7 @@ type Props = {
 
 export const LoginTab = ({
   projectDetected,
+  keyMarkupFound,
   sdkTooOld,
   serverHost,
   serverLink,
@@ -54,6 +56,20 @@ export const LoginTab = ({
     return (
       <>
         <SdkTooOldAlert />
+        {useApiKeyButton}
+      </>
+    );
+  }
+
+  if (!projectDetected && keyMarkupFound) {
+    return (
+      <>
+        <Alert severity="success" data-testid="standalone-project-detected">
+          <AlertTitle>Backend translation keys detected</AlertTitle>
+          This page can be connected without the Tolgee JavaScript SDK. Choose
+          “Use an API key instead” and enter a project API key from your Tolgee
+          project.
+        </Alert>
         {useApiKeyButton}
       </>
     );
