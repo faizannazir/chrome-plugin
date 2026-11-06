@@ -55,5 +55,5 @@ export function bridgeDataKeys(root: ParentNode = document): () => void {
 
 /** True when the page contains markup that the Tolgee SDK can observe. */
 export function hasTolgeeKeyElements(root: ParentNode = document): boolean {
-  return root.querySelector('[data-tolgee-key-only]') !== null;
+  return root.querySelector('[data-key], [data-tolgee-key-only]') !== null;
 }
