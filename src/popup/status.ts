@@ -1,6 +1,6 @@
 import { State } from './popupState';
 
-export type Status = 'error' | 'loading' | 'legacy' | 'not_present' | 'keys_found';
+export type Status = 'error' | 'loading' | 'legacy' | 'not_present';
 
 export const statusFor = ({
   error,
@@ -14,11 +14,8 @@ export const statusFor = ({
   if (tolgeePresent === 'loading') {
     return 'loading';
   }
-  if (tolgeePresent === 'present' || appliedValues) {
+  if (tolgeePresent === 'present' || appliedValues || keyMarkupFound) {
     return null;
-  }
-  if (keyMarkupFound) {
-    return 'keys_found';
   }
   return tolgeePresent === 'legacy' ? 'legacy' : 'not_present';
 };
