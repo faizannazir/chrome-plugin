@@ -7,7 +7,7 @@ import {
 } from './credentialSink';
 import { Messages } from './Messages';
 import { updateState } from './updateState';
-import { bridgeDataKeys } from './dataKeyBridge';
+import { bridgeDataKeys, hasTolgeeKeyElements } from './dataKeyBridge';
 
 let configuration: LibConfig | undefined = undefined;
 
@@ -54,6 +54,9 @@ messages.listenRuntime('DETECT_TOLGEE', async () => {
   if (configuration) {
     messages.sendToPlugin('TOLGEE_CONFIG_LOADED', configuration);
   }
+  // data-tolgee-key-only is SDK-compatible markup, but by itself does not
+  // prove that the Tolgee runtime is initialized on this page.
+  return { keyMarkupFound: hasTolgeeKeyElements() };
 });
 
 messages.listenRuntime('GET_CREDENTIALS', async () =>
