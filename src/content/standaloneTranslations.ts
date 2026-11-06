@@ -11,6 +11,10 @@ type TranslationPage = {
   _embedded?: { keys?: TolgeeKey[] };
   page?: { totalPages?: number; number?: number };
 };
+type ProjectLanguage = { tag?: string; base?: boolean };
+type LanguagesPage = {
+  _embedded?: { languages?: ProjectLanguage[] };
+};
 type ApiReply =
   | { response: { status: number; body: string } }
   | { error: { message?: string } };
@@ -36,10 +40,7 @@ export const startStandaloneTranslations = (
     return () => undefined;
   }
 
-  const language = preferredLanguage();
-  if (!language) {
-    return () => undefined;
-  }
+  let language: string | null = preferredLanguage();
 
   let stopped = false;
   const values = new Map<string, string>();
@@ -82,6 +83,30 @@ export const startStandaloneTranslations = (
   };
 
   const loadTranslations = async () => {
+    const languagePath = `/v2/projects/${encodeURIComponent(
+      credentials.projectKey!
+    )}/languages?page=0&size=200`;
+    const languageBody = JSON.parse(
+      await request('GET', languagePath)
+    ) as LanguagesPage;
+    const available = (languageBody._embedded?.languages ?? []).filter(
+      (item): item is ProjectLanguage & { tag: string } =>
+        typeof item.tag === 'string'
+    );
+    const candidates = preferredLanguages();
+    const selected = candidates
+      .map((candidate) =>
+        available.find(
+          (item) => item.tag.toLowerCase() === candidate.toLowerCase()
+        )
+      )
+      .find((item) => item !== undefined);
+    const languageFallback = available.find((item) => !item.base) ?? available[0];
+    language = selected?.tag ?? languageFallback?.tag ?? language;
+    if (!language) {
+      throw new Error('No language is available in the connected Tolgee project');
+    }
+
     const loaded = new Map<string, string>();
     for (let page = 0; page < MAX_PAGES; page += 1) {
       const query = new URLSearchParams({
@@ -240,7 +265,16 @@ export const startStandaloneTranslations = (
   };
 };
 
-const preferredLanguage = (): string | null => {
-  const candidate = navigator.languages?.[0] || navigator.language;
-  return candidate?.trim() || document.documentElement.lang?.trim() || null;
+const preferredLanguages = (): string[] => {
+  const candidates = [
+    ...(navigator.languages ?? []),
+    navigator.language,
+    document.documentElement.lang,
+  ];
+  return [...new Set(candidates.map((value) => value?.trim()).filter(
+    (value): value is string => Boolean(value)
+  ))];
 };
+
+const preferredLanguage = (): string | null =>
+  preferredLanguages()[0] ?? null;
