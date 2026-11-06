@@ -43,3 +43,4 @@ describe('bridgeDataKeys', () => {
     document.body.innerHTML = '<p>Plain content</p>';
     expect(hasTolgeeKeyElements()).toBe(false);
   });
+});
