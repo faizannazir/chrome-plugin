@@ -107,7 +107,8 @@ export const startStandaloneTranslations = (
         );
       })
       .find((item) => item !== undefined);
-    const languageFallback = available.find((item) => item.base) ?? available[0];
+    const languageFallback =
+      available.find((item) => item.base) ?? available[0];
     language = selected?.tag ?? languageFallback?.tag ?? language;
     if (!language) {
       throw new Error(
