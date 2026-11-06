@@ -26,9 +26,25 @@ describe('credentialDelivery', () => {
     expect(credentialDelivery(sdk(undefined), false)).toBe('proxy');
     expect(credentialDelivery(sdk(2), false)).toBe('proxy');
   });
+
+  it('keeps keys in the worker when no Tolgee SDK is present', () => {
+    expect(credentialDelivery(null, true)).toBe('proxy');
+    expect(credentialDelivery(undefined, true)).toBe('proxy');
+  });
 });
 
 describe('sdkTooOldFor', () => {
+  it('does not mistake a page without an SDK for an outdated SDK', () => {
+    expect(
+      sdkTooOldFor({
+        libConfig: null,
+        hasSession: false,
+        siteKeyScreen: false,
+        activeValues: null,
+      })
+    ).toBe(false);
+  });
+
   const form = { apiUrl: 'https://app.tolgee.io' };
   const keyValues = { ...form, apiKey: 'tgpak_x', projectKey: '7' };
   const oauthValues = { ...form, oauth: true, projectKey: '7' };
