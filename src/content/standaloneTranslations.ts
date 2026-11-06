@@ -40,7 +40,7 @@ export const startStandaloneTranslations = (
     return () => undefined;
   }
 
-  let language: string | null = preferredLanguage();
+  let language = preferredLanguage() ?? '';
 
   let stopped = false;
   const values = new Map<string, string>();
