@@ -31,7 +31,6 @@ describe('bridgeDataKeys', () => {
     await vi.waitFor(() => expect(bridged.hasAttribute('data-tolgee-key-only')).toBe(false));
     expect(manual.getAttribute('data-tolgee-key-only')).toBe('manual');
   });
-});
 
   it('recognizes native data-tolgee-key-only markup without rewriting it', () => {
     document.body.innerHTML = '<p data-tolgee-key-only="native.key">Original</p>';
