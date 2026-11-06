@@ -32,6 +32,8 @@ export const createReducer =
           action.payload.libData,
           action.payload.frameId
         );
+      case 'SET_KEY_MARKUP_FOUND':
+        return { ...state, keyMarkupFound: action.payload };
       case 'SET_ERROR':
         return {
           ...state,
